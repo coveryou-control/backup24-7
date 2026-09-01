@@ -1,0 +1,52 @@
+/* ==========================================================================
+   BRAND TOKENS — the single source of truth for the theme.
+
+   §4: the agent must consume the supplied theme, not invent one. Every colour,
+   font and radius used anywhere on the site resolves through a variable here,
+   so dropping in a different brand theme is a one-file change.
+
+   WHY THE COLOURS ARE STORED AS CHANNELS
+   Tailwind can only apply an opacity modifier (`bg-primary/10`, `bg-bg/95`) to a
+   CSS-variable colour if the variable holds bare RGB channels and the config
+   composes them with `<alpha-value>`. Stored as a full `rgb()`/hex value, every
+   `/opacity` utility silently generates NO CSS AT ALL — no error, no warning,
+   just a missing background. So: channels for Tailwind, plus full-colour
+   aliases below for direct use in plain CSS, SVG and gradients.
+   ========================================================================== */
+:root {
+  /* --- colour channels (consumed by tailwind.config.ts) ------------------- */
+  --bg-rgb: 7 11 10; /* #070b0a — page ground */
+  --surface-rgb: 12 18 17; /* #0c1211 — raised bands */
+  --primary-rgb: 94 210 156; /* #5ed29c — brand accent + primary CTA */
+  --primary-hover-rgb: 77 195 140; /* #4dc38c */
+  --on-primary-rgb: 7 11 10; /* text on the accent */
+  --ink-rgb: 255 255 255;
+  --danger-rgb: 255 107 107; /* #ff6b6b */
+
+  /* --- full colours (for direct CSS / SVG / gradients) -------------------- */
+  --color-bg: rgb(var(--bg-rgb));
+  --color-surface: rgb(var(--surface-rgb));
+  --color-primary: rgb(var(--primary-rgb));
+  --color-primary-hover: rgb(var(--primary-hover-rgb));
+  --color-on-primary: rgb(var(--on-primary-rgb));
+  --color-ink: rgb(var(--ink-rgb));
+  --color-danger: rgb(var(--danger-rgb));
+
+  /* Alpha-bearing greys. Never opacity-modified, so a full colour is correct. */
+  --color-muted: rgb(var(--ink-rgb) / 0.65);
+  --color-subtle: rgb(var(--ink-rgb) / 0.45);
+  --color-hairline: rgb(var(--ink-rgb) / 0.09);
+
+  /* --- type -------------------------------------------------------------- */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), sans-serif;
+  --font-accent: var(--font-instrument), Georgia, serif;
+
+  /* --- shape ------------------------------------------------------------- */
+  --radius-card: 0.75rem;
+  --radius-panel: 1rem;
+  --radius-pill: 999px;
+
+  /* --- layout ------------------------------------------------------------ */
+  --shell-max: 1280px;
+}

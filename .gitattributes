@@ -1,0 +1,35 @@
+# ==========================================================================
+#  Line endings and diff behaviour.
+#
+#  This project is developed on Windows and will be built on Linux CI. Without
+#  normalisation, the first checkout on either side rewrites every line of
+#  every file and the initial diff is unreadable. `text=auto eol=lf` stores LF
+#  in the repo and lets Git hand Windows whatever it wants locally.
+# ==========================================================================
+
+* text=auto eol=lf
+
+# Files that must keep CRLF to run on Windows.
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+# Explicitly binary — never diffed, never line-ending-converted.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.avif binary
+*.ico  binary
+*.mp4  binary
+*.webm binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
+*.pdf  binary
+
+# Generated: collapsed in diffs and excluded from language statistics, so the
+# repo is reported as TypeScript rather than as a lockfile.
+package-lock.json -diff linguist-generated=true

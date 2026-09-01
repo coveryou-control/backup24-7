@@ -1,0 +1,66 @@
+name: CI
+
+# Runs the same three checks, in the same order, as `npm run verify` locally.
+# A build failure here is the last gate before merge — there is no test suite
+# yet, so typecheck and build carry the weight.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Least privilege: CI only needs to read the repository.
+permissions:
+  contents: read
+
+concurrency:
+  # A new push to the same branch cancels the in-flight run rather than queueing.
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Single source of truth, shared with local development.
+          node-version-file: .nvmrc
+          cache: npm
+
+      # `ci` not `install`: installs exactly the lockfile and fails if
+      # package.json and package-lock.json have drifted apart.
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Advisory: reports high-severity vulnerabilities without blocking a
+      # merge on a transitive advisory nobody can action today.
+      - name: npm audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
